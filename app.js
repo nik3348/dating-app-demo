@@ -41,11 +41,6 @@ app.post("/auth", async (req, res) => {
   res.send({ token, userId: user.id });
 });
 
-app.get("/users", async (req, res) => {
-  const result = await User.getAllUsers();
-  res.send(result);
-});
-
 app.get("/users/:userId", authenticateToken, async (req, res) => {
   const users = await User.getRecommendationsForUser(req.params.userId);
   res.send(users);

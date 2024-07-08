@@ -1,41 +1,44 @@
 import React from 'react';
-import { AppContext } from '../context/AppContextProvider';
 import { FaBookOpen, FaCheck, FaTimes } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
+import { getToken, getUserId } from '../utils/jwt-utils';
 
 const MainPage = () => {
-  const [users, setUsers] = React.useState<User[]>([{
-    id: '',
-    name: '',
-    profilePicture: '',
-    gender: '',
-    age: 0,
-    location: '',
-    university: '',
-    interests: [],
-  }]);
-  const context = React.useContext(AppContext);
+  const [users, setUsers] = React.useState<User[]>([]);
+
+  const fetchUsers = async () => {
+    const response = await fetch(`http://localhost:3000/users/${getUserId()}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${getToken()}`
+      }
+    });
+    return await response.json();
+  }
 
   React.useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch(`http://localhost:3000/users/${context.userId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${context.token}`
-        }
-      });
-      const data = await response.json();
-      setUsers(data);
-    }
-    fetchUsers();
+    fetchUsers().then((users) => {
+      setUsers(users);
+    });
   }, []);
+
+  React.useEffect(() => {
+    if (users.length < 6) {
+      fetchUsers().then((data) => {
+        const newData = data.filter((user) => !users.some((u) => u.id === user.id));
+        const newUsers = [...users, ...newData];
+        setUsers(newUsers);
+      });
+    }
+  }, [users]);
 
   const handleLike = async () => {
     const user = users[users.length - 1];
-    const result = await fetch(`http://localhost:3000/users/${context.userId}/like?id=${user?.id}`, {
+    console.log(user);
+    const result = await fetch(`http://localhost:3000/users/${getUserId()}/like?id=${user?.id}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${context.token}`
+        'Authorization': `Bearer ${getToken()}`
       }
     });
 
@@ -45,10 +48,10 @@ const MainPage = () => {
 
   const handleDislike = async () => {
     const user = users[users.length - 1];
-    const result = await fetch(`http://localhost:3000/users/${context.userId}/dislike?id=${user?.id}`, {
+    const result = await fetch(`http://localhost:3000/users/${getUserId()}/dislike?id=${user?.id}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${context.token}`
+        'Authorization': `Bearer ${getToken()}`
       }
     });
 
@@ -68,7 +71,7 @@ const MainPage = () => {
         height: '500px',
         position: 'relative',
       }}>
-        {users.map((user) => (
+        {users.map((user, index) => (
           <div key={user.id} style={{
             backgroundColor: '#FFFFFF',
             width: '300px',
@@ -79,8 +82,8 @@ const MainPage = () => {
             flexDirection: 'column',
             alignItems: 'center',
             position: 'absolute',
-            top: `${users.indexOf(user) * 5}px`,
-            zIndex: users.indexOf(user),
+            top: `${index * 5}px`,
+            zIndex: index,
           }}>
             <img
               src={user.profilePicture}

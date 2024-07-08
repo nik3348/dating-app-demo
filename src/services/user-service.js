@@ -62,6 +62,7 @@ export const getRecommendationsForUser = async (id) => {
           [Op.notIn]: user.swipes,
         },
       },
+      limit: 10,
     });
 
     const recommendations = allUsers.map((row) => {
@@ -77,7 +78,6 @@ export const getRecommendationsForUser = async (id) => {
 
     return recommendations
       .sort((a, b) => b.score - a.score)
-      .slice(0, 10)
       .map(({ score, ...rest }) => rest);
   } catch (error) {
     console.error("Unable to connect to the database:", error);

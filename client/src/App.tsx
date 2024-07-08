@@ -4,7 +4,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import AppContextProvider from './context/AppContextProvider.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 
 const App = () => {
@@ -15,15 +14,12 @@ const App = () => {
     },
     {
       path: "/dashboard",
-
-      element: <ProtectedRoute children={<MainPage />}/>,
+      element: <ProtectedRoute children={<MainPage />} />,
     },
   ]);
 
   return (
-    <AppContextProvider>
-      <RouterProvider router={router} />
-    </AppContextProvider>
+    <RouterProvider router={router} />
   );
 }
 

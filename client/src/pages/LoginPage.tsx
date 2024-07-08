@@ -1,12 +1,18 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { AppContext } from "../context/AppContextProvider";
+import Cookies from 'js-cookie';
+import { isLoggedIn } from "../utils/jwt-utils";
 
 const LoginPage = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   const navigate = useNavigate();
-  const context = React.useContext(AppContext);
+
+  React.useEffect(() => {
+    if (isLoggedIn()) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const handleLogin = async () => {
     const response = await fetch('http://localhost:3000/auth', {
@@ -22,7 +28,7 @@ const LoginPage = () => {
 
     const data = await response.json();
     if (response.ok) {
-      context.setToken(data.token);
+      Cookies.set('token', data.token, { expires: 1 });
       navigate("/dashboard")
     } else {
       console.log('Login failed');
