@@ -61,7 +61,7 @@ const MainPage = () => {
     setUsers(users => users.slice(0, users.length - 1));
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     Cookies.remove('token');
     navigate('/');
   }
