@@ -17,7 +17,6 @@ export const generateUsers = (count) => {
   ];
 
   for (let i = 0; i < count; i++) {
-    const id = faker.string.uuid();
     const username = faker.internet.userName();
     const password = faker.internet.password();
     const name = faker.person.fullName();
@@ -33,7 +32,6 @@ export const generateUsers = (count) => {
     const swipes = [];
 
     users.push({
-      id,
       username,
       password,
       name,

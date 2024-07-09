@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router";
 import Cookies from 'js-cookie';
+import { useNavigate } from "react-router";
 import { isLoggedIn } from "../utils/jwt-utils";
 
 const LoginPage = () => {
@@ -15,7 +15,7 @@ const LoginPage = () => {
   }, []);
 
   const handleLogin = async () => {
-    const response = await fetch('http://localhost:3000/auth', {
+    const response = await fetch('http://localhost:3000/api/auth', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
